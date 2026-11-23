@@ -6,12 +6,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split , GridSearchCV
-from sklearn.linear_model import ElasticNet , Ridge , Lasso , LinearRegression
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor , GradientBoostingRegressor , AdaBoostRegressor
-from sklearn.neighbors import KNeighborsRegressor
-from sklearn.svm import SVR
-from xgboost import XGBRegressor
+from model_registry import Models_registry
 from category_encoders import TargetEncoder
 
 from preprcessing import data_loader, change_type, remove_outliers_and_log_price, df_dropna
@@ -44,50 +39,21 @@ preprocessor = ColumnTransformer(
     ]
 )
 
-class ModelRegistry:
+def x_and_y(df , Target):
+    X = df.drop(Target , axis=1)
+    y = df[Target]
 
-    @staticmethod
-    def get_models():
+    X_train ,X_test ,y_train ,y_test = train_test_split(X ,y , test_size=0.2 , random_state=42 , shuffle=True) 
 
-        return {
+    return X_train , X_test , y_train, y_test
 
-            "random_forest": {
-                "estimator": RandomForestRegressor(
-                    n_estimators=200,
-                    random_state=42,
-                    n_jobs=1
-                ),
-                "scale": False
-            },
+def grid_search(X_train ,X_test ,y_train ,y_test ,y_pred):
+    models = Models_registry.get_models()
+    for name , confing in models.items():
+        
 
-            "decision_tree": {
-                "estimator": DecisionTreeRegressor(
-                    random_state=42
-                ),
-                "scale": False
-            },
+def fit_models(X_train , y_train):
+    models = Models_registry.get_models()
 
-            "svr": {
-                "estimator": SVR(),
-                "scale": True
-            },
-
-            "knn": {
-                "estimator": KNeighborsRegressor(
-                    n_neighbors=5
-                ),
-                "scale": True
-            },
-
-            "xgboost": {
-                "estimator": XGBRegressor(
-                    n_estimators=200,
-                    learning_rate=0.05,
-                    max_depth=5,
-                    random_state=42,
-                    n_jobs=1
-                ),
-                "scale": False
-            }
-        }
+def grid_search(X_train ,X_test ,y_train ,y_test ,y_pred):
 
